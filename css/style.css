@@ -1,0 +1,103 @@
+:root {
+  --bg: #dbeaff;
+  --text: #111;
+  --muted: #555;
+  --field-border: #8a8a8a;
+  --placeholder: #959595;
+  --accent: #91c6fc;
+  --accent-hover: #74b4f7;
+  --error: #c62828;
+  --banner-bg: #fff4d6;
+  --banner-border: #e6c25a;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  font-size: 16px;
+}
+
+.hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 24px 16px 8px;
+}
+.logo { width: 390px; max-width: 45%; height: auto; }
+.tagline { max-width: 520px; font-size: 1.1rem; line-height: 1.3; }
+.tagline p { margin: 0 0 10px; }
+
+.banner {
+  max-width: 600px;
+  margin: 16px auto 0;
+  padding: 10px 14px;
+  background: var(--banner-bg);
+  border: 1px solid var(--banner-border);
+  border-radius: 8px;
+  font-size: 0.9rem;
+}
+
+main { max-width: 600px; margin: 0 auto; padding: 24px 16px 48px; }
+
+.row { margin-bottom: 26px; }
+.row.two { display: grid; grid-template-columns: 240px 215px; column-gap: 72px; align-items: start; }
+
+fieldset { border: 0; padding: 0; margin: 0 0 26px; }
+legend, label { display: block; font-size: 1.1rem; margin-bottom: 4px; padding: 0; }
+.field { display: flex; flex-direction: column; }
+
+label.radio { display: flex; align-items: center; gap: 10px; font-size: 0.95rem; margin: 6px 0 0; cursor: pointer; }
+label.radio input { width: 18px; height: 18px; margin: 0; accent-color: #2a7be4; }
+
+input[type="text"], select {
+  font: inherit;
+  font-size: 0.9rem;
+  color: var(--text);
+  background: transparent;
+  border: 1px solid var(--field-border);
+  border-radius: 6px;
+  padding: 6px 8px;
+  width: 215px;
+}
+input[type="text"] { width: 240px; padding: 7px 8px; }
+input::placeholder { color: var(--placeholder); }
+select:invalid { color: var(--placeholder); }
+select option { color: var(--text); }
+input:focus, select:focus { outline: 2px solid #2a7be4; outline-offset: 1px; }
+.invalid { border-color: var(--error) !important; }
+.error { color: var(--error); font-size: 0.8rem; min-height: 1em; margin-top: 4px; }
+
+/* Unit label sits lower in the design, aligned with its dropdown */
+.row.two .field + .field { padding-top: 8px; }
+
+button {
+  display: block;
+  margin: 8px auto 0;
+  font: inherit;
+  font-size: 0.85rem;
+  background: var(--accent);
+  border: 0;
+  border-radius: 6px;
+  padding: 8px 22px;
+  cursor: pointer;
+}
+button:hover { background: var(--accent-hover); }
+
+.result { text-align: center; font-size: 1.1rem; margin-top: 44px; }
+.result .value { font-weight: 700; border-bottom: 2px solid var(--text); padding: 0 6px; min-width: 60px; display: inline-block; }
+.meta { text-align: center; color: var(--muted); font-size: 0.85rem; min-height: 1em; }
+
+@media (max-width: 720px) {
+  .hero { flex-direction: column; text-align: center; }
+  .logo { max-width: 80%; }
+  .row.two { grid-template-columns: 1fr; row-gap: 4px; }
+  .row.two .field + .field { padding-top: 0; }
+  input[type="text"], select { width: 100%; }
+}
