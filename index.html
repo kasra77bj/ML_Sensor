@@ -2,111 +2,138 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>StrenML</title>
+  <meta name="claude:viewport-fit-sides" content="cover" />
   <meta name="description" content="Predict the flexural strength of 3D-printed concrete from electrical resistivity, relative permittivity and internal temperature using machine learning." />
-  <link rel="icon" href="assets/logo.png" />
+  <link rel="icon" href="assets/logo.svg" type="image/svg+xml" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" />
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-  <header class="hero">
-    <img class="logo" src="assets/logo.png" alt="StrenML logo" />
-    <div class="tagline">
-      <p>Leverage Machine Learning to predict the <b>Flexural Strength</b> of 3D-Printed concrete!</p>
-      <p>Just provide the <b>Electrical Resistivity</b>, <b>Relative Permittivity</b>, and
-        <b>Internal Temperature</b> of the concrete, and get the final Flexural Strength!</p>
+  <header class="band">
+    <div class="band-inner">
+      <img class="logo" src="assets/logo.svg" alt="StrenML" width="390" height="120" />
+      <div class="tagline">
+        <h1>Predict the <b>flexural strength</b> of 3D-printed concrete.</h1>
+        <p>Enter the <b>electrical resistivity</b>, <b>relative permittivity</b> and
+          <b>internal temperature</b> measured by the embedded sensor, and a trained model
+          estimates the flexural strength in MPa.</p>
+      </div>
     </div>
   </header>
 
-  <div id="demo-banner" class="banner" hidden>
-    Demo models: these were trained on synthetic data, not the paper's dataset.
-    Run <code>training/train_and_export.py</code> with your data to replace them.
-  </div>
+  <main class="wrap">
+    <div id="demo-banner" class="notice" hidden>
+      <strong>Demo models.</strong> These models were trained on synthetic data, not the paper's dataset.
+      Run <code>training/train_and_export.py</code> with the real data to replace them.
+    </div>
 
-  <main>
-    <form id="form" novalidate>
-      <div class="row">
-        <div class="field">
-          <label for="model">AI Model</label>
-          <select id="model" required>
-            <option value="" disabled selected>Select Value</option>
-            <option value="linear">Linear Regression</option>
-            <option value="svr">SVR</option>
-            <option value="mlp">ANN (MLP)</option>
-          </select>
-          <small class="error" data-for="model"></small>
+    <div class="layout">
+      <form id="form" class="panel form" novalidate>
+        <section class="group">
+          <h2 class="group-title">Model</h2>
+          <div class="field">
+            <span class="label" id="model-label">AI model</span>
+            <div class="segmented" role="radiogroup" aria-labelledby="model-label" id="model">
+              <label><input type="radio" name="model" value="linear" /><span>Linear Regression</span></label>
+              <label><input type="radio" name="model" value="svr" /><span>SVR</span></label>
+              <label><input type="radio" name="model" value="mlp" /><span>ANN (MLP)</span></label>
+            </div>
+            <small class="error" data-for="model"></small>
+          </div>
+        </section>
+
+        <section class="group">
+          <h2 class="group-title">Specimen</h2>
+          <div class="field-row">
+            <div class="field">
+              <span class="label" id="age-label">Concrete age</span>
+              <div class="segmented" role="radiogroup" aria-labelledby="age-label" id="age">
+                <label><input type="radio" name="age" value="1" /><span>1 day</span></label>
+                <label><input type="radio" name="age" value="3" /><span>3 days</span></label>
+                <label><input type="radio" name="age" value="5" /><span>5 days</span></label>
+                <label><input type="radio" name="age" value="7" /><span>7 days</span></label>
+              </div>
+              <small class="error" data-for="age"></small>
+            </div>
+            <div class="field">
+              <span class="label" id="curing-label">Curing applied?</span>
+              <div class="segmented" role="radiogroup" aria-labelledby="curing-label" id="curing">
+                <label><input type="radio" name="curing" value="1" /><span>Yes</span></label>
+                <label><input type="radio" name="curing" value="0" /><span>No</span></label>
+              </div>
+              <small class="error" data-for="curing"></small>
+            </div>
+          </div>
+        </section>
+
+        <section class="group">
+          <h2 class="group-title">Sensor readings</h2>
+          <div class="field">
+            <label class="label" for="resistivity">Electrical resistivity</label>
+            <div class="input-group">
+              <input id="resistivity" type="text" inputmode="decimal" placeholder="e.g. 45.2" autocomplete="off" />
+              <select id="resistivity-unit" aria-label="Resistivity unit">
+                <option value="ohm.m" selected>Ω·m</option>
+                <option value="kohm.m">kΩ·m</option>
+                <option value="ohm.cm">Ω·cm</option>
+              </select>
+            </div>
+            <small class="error" data-for="resistivity"></small>
+          </div>
+
+          <div class="field">
+            <label class="label" for="permittivity">Relative permittivity</label>
+            <div class="input-group">
+              <input id="permittivity" type="text" inputmode="decimal" placeholder="e.g. 50.5" autocomplete="off" />
+              <span class="unit-static" title="Dimensionless">ε<sub>r</sub></span>
+            </div>
+            <small class="error" data-for="permittivity"></small>
+          </div>
+
+          <div class="field">
+            <label class="label" for="temperature">Average temperature</label>
+            <div class="input-group">
+              <input id="temperature" type="text" inputmode="decimal" placeholder="e.g. 23.0" autocomplete="off" />
+              <select id="temperature-unit" aria-label="Temperature unit">
+                <option value="C" selected>°C</option>
+                <option value="F">°F</option>
+              </select>
+            </div>
+            <small class="error" data-for="temperature"></small>
+          </div>
+        </section>
+
+        <div class="actions">
+          <button type="submit" class="btn-primary">Calculate</button>
+          <button type="button" class="btn-ghost" id="example">Fill example values</button>
+          <button type="reset" class="btn-ghost" id="clear">Clear</button>
         </div>
-      </div>
+      </form>
 
-      <div class="row">
-        <div class="field">
-          <label for="age">Concrete Age</label>
-          <select id="age" required>
-            <option value="" disabled selected>Select Value</option>
-            <option value="1">1 day</option>
-            <option value="3">3 days</option>
-            <option value="5">5 days</option>
-            <option value="7">7 days</option>
-          </select>
-          <small class="error" data-for="age"></small>
+      <aside class="panel result" aria-live="polite">
+        <p class="eyebrow">Expected flexural strength</p>
+        <p class="big"><span id="result">—</span><span class="mpa">MPa</span></p>
+        <p id="result-meta" class="meta">Fill in the form and press Calculate.</p>
+        <p id="result-r2" class="r2" hidden></p>
+
+        <div id="details" hidden>
+          <dl id="inputs-used" class="inputs-used"></dl>
+
+          <h3 class="sub">All three models, same inputs</h3>
+          <p class="sub-note">Bar length is each model's accuracy (R² on the test data).</p>
+          <div id="compare" class="compare"></div>
         </div>
-      </div>
-
-      <fieldset class="row field">
-        <legend>Curing applied?</legend>
-        <label class="radio"><input type="radio" name="curing" value="1" /> Yes</label>
-        <label class="radio"><input type="radio" name="curing" value="0" /> No</label>
-        <small class="error" data-for="curing"></small>
-      </fieldset>
-
-      <div class="row two">
-        <div class="field">
-          <label for="resistivity">Electrical Resistivity</label>
-          <input id="resistivity" type="text" inputmode="decimal" placeholder="Enter Input" autocomplete="off" />
-          <small class="error" data-for="resistivity"></small>
-        </div>
-        <div class="field">
-          <label for="resistivity-unit">Unit</label>
-          <select id="resistivity-unit">
-            <option value="ohm.m" selected>Ω·m</option>
-            <option value="kohm.m">kΩ·m</option>
-            <option value="ohm.cm">Ω·cm</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="row two">
-        <div class="field">
-          <label for="permittivity">Relative Permittivity</label>
-          <input id="permittivity" type="text" inputmode="decimal" placeholder="Enter Input" autocomplete="off" />
-          <small class="error" data-for="permittivity"></small>
-        </div>
-      </div>
-
-      <div class="row two">
-        <div class="field">
-          <label for="temperature">Average Temperature</label>
-          <input id="temperature" type="text" inputmode="decimal" placeholder="Enter Input" autocomplete="off" />
-          <small class="error" data-for="temperature"></small>
-        </div>
-        <div class="field">
-          <label for="temperature-unit">Unit</label>
-          <select id="temperature-unit">
-            <option value="C" selected>°C</option>
-            <option value="F">°F</option>
-          </select>
-        </div>
-      </div>
-
-      <button type="submit">Calculate</button>
-    </form>
-
-    <p class="result">Expected Flexural Strength:
-      <span id="result" class="value">______</span> <b>MPa</b></p>
-    <p id="result-meta" class="meta"></p>
+      </aside>
+    </div>
   </main>
+
+  <footer class="wrap foot">
+    StrenML · machine-learning prediction of early-age flexural strength from embedded sensor data.
+  </footer>
 
   <script src="models/models.js"></script>
   <script src="js/predict.js"></script>
